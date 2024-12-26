@@ -4,7 +4,6 @@ import re
 import random
 import time
 from difflib import SequenceMatcher
-import multiprocessing
 def similarity(a, b):
     a_lower, b_lower = a.lower(), b.lower()
     base_similarity = SequenceMatcher(None, a_lower, b_lower).ratio()
@@ -35,7 +34,7 @@ def parse_amazon_page(content, product_name, price_digit_limit=None):
                         if len(integer_part) != price_digit_limit:
                             continue
                     product_prices.append((name, numeric_price))
-    print(product_prices)
+    # print(product_prices)
     return product_prices
 
 
@@ -69,6 +68,7 @@ def scrape_amazon(product_name, price_digit_limit, queue, max_retries=5, retry_d
         except requests.exceptions.RequestException as e:
             print(f"An error occurred: {e}. Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})")
             time.sleep(retry_delay)
+            queue.put([])  # Empty list after retries failed
 
-    queue.put([])  # Empty list after retries failed
+
 

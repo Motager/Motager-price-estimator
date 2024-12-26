@@ -2,34 +2,37 @@ import multiprocessing
 from  Jumia_scraper import scrape_jumia
 from Amazon_scraper import scrape_amazon
 
-# # Assuming the multithreaded scrape functions are imported:
-# # scrape_amazon_multithreaded and scrape_jumia_multithreaded
-#
-# def scrape_product(product_name, price_digit_limit, scraper_function):
-#     return scraper_function([product_name], price_digit_limit)
-#
-# def scrape_product_in_parallel(product_name, price_digit_limit=None):
-#     with Pool(processes=2) as pool:  # Create two processes: one for Jumia, one for Amazon
-#         # Dispatch multithreaded scrapers for Amazon and Jumia
-#         results = pool.starmap(
-#             scrape_product_multithreaded,
-#             [
-#                 (product_name, price_digit_limit, scrape_jumia_multithreaded),
-#                 (product_name, price_digit_limit, scrape_amazon_multithreaded)
-#             ]
-#         )
-#
-#     # Combine results from both sources
-#     all_prices = {}
-#     for result in results:
-#         all_prices.update(result)
-#
-#     return all_prices
-#
 def scrape_product_multiprocessing(product_name,price_digit_limit=None):
-    p1 = multiprocessing.process(target=scrape_amazon,args=(product_name,price_digit_limit))
-    p2 = multiprocessing.process(target=scrape_jumia,args=(product_name,price_digit_limit))
-    p1.start()
-    p2.start()
-    p1.join()
-    p2.join()
+    product_name = "soundcore r50i nc"
+    price_digit_limit = 4
+    queue = multiprocessing.Queue()  # Create a queue to store results
+
+    # Create processes
+    amazonScrapingProcess = multiprocessing.Process(target=scrape_amazon, args=(product_name, price_digit_limit, queue))
+    jumiaScrapingProcess = multiprocessing.Process(target=scrape_jumia, args=(product_name, price_digit_limit, queue))
+
+    # Start the processes
+    amazonScrapingProcess.start()
+    jumiaScrapingProcess.start()
+
+    # Wait for the processes to complete
+    # amazonScrapingProcess.join()
+    # jumiaScrapingProcess.join()
+
+    # Retrieve results from the queue
+    results_amazon = queue.get()  # Get the results from Amazon
+    results_jumia = queue.get()  # Get the results from Jumia
+
+    # Combine the results from both sources
+    all_results = {}
+
+    if results_amazon:  # If Amazon returned results
+        for result in results_amazon:
+            all_results[result[0]] = result[1]
+    if results_jumia:  # If Jumia returned results
+        for result in results_jumia:
+            all_results[result[0]] = result[1]
+
+    # Print combined results
+    for key, value in all_results.items():
+        print(f"{key} --> {value}".format(key, value))

@@ -3,9 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import random
 import time
-from difflib import SequenceMatcher
 from Amazon_scraper import similarity
-import multiprocessing
 
 
 def parse_jumia_page(content, product_name, price_digit_limit=None):
@@ -28,7 +26,7 @@ def parse_jumia_page(content, product_name, price_digit_limit=None):
                     if len(integer_part) != price_digit_limit:
                         continue
                 product_prices.append((name, numeric_price))
-    print(product_prices)
+    # print(product_prices)
     return product_prices
 
 
@@ -62,7 +60,8 @@ def scrape_jumia(product_name, price_digit_limit, queue, max_retries=5, retry_de
         except requests.exceptions.RequestException as e:
             print(f"An error occurred: {e}. Retrying in {retry_delay} seconds... (Attempt {attempt + 1}/{max_retries})")
             time.sleep(retry_delay)
+            queue.put([])  # Empty list after retries failed
 
-    queue.put([])  # Empty list after retries failed
+
 
 
