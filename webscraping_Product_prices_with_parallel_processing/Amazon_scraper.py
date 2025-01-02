@@ -4,6 +4,7 @@ import re
 import random
 import time
 from difflib import SequenceMatcher
+import multiprocessing
 def similarity(a, b):
     a_lower, b_lower = a.lower(), b.lower()
     base_similarity = SequenceMatcher(None, a_lower, b_lower).ratio()
@@ -60,7 +61,10 @@ def scrape_amazon(product_name, price_digit_limit, queue, max_retries=5, retry_d
                 continue
             if response.status_code == 200:
                 print(f"Page fetched successfully with status code: {response.status_code}")
-                queue.put(parse_amazon_page(response.content, product_name, price_digit_limit))
+                # time.sleep(2)
+                results = parse_amazon_page(response.content, product_name, price_digit_limit)
+                queue.put(("amazon", results))
+                print("Amazon results sent to queue")
                 return
             else:
                 print(f"Unexpected status code: {response.status_code}")

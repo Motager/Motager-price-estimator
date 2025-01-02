@@ -4,7 +4,7 @@ import re
 import random
 import time
 from Amazon_scraper import similarity
-
+import multiprocessing
 
 def parse_jumia_page(content, product_name, price_digit_limit=None):
     soup = BeautifulSoup(content, 'html.parser')
@@ -52,7 +52,10 @@ def scrape_jumia(product_name, price_digit_limit, queue, max_retries=5, retry_de
                 continue
             if response.status_code == 200:
                 print(f"Page fetched successfully with status code: {response.status_code}")
-                queue.put(parse_jumia_page(response.content, product_name, price_digit_limit))
+                # time.sleep(1.5)
+                results = parse_jumia_page(response.content, product_name, price_digit_limit)
+                queue.put(("jumia", results))
+                print("jumia results sent to queue")
                 return
             else:
                 print(f"Unexpected status code: {response.status_code}")

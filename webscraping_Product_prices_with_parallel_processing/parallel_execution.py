@@ -1,38 +1,39 @@
 import multiprocessing
 from  Jumia_scraper import scrape_jumia
 from Amazon_scraper import scrape_amazon
+import time
 
-def scrape_product_multiprocessing(product_name,price_digit_limit=None):
-    product_name = "soundcore r50i nc"
-    price_digit_limit = 4
-    queue = multiprocessing.Queue()  # Create a queue to store results
+def scrape_product_multiprocessing(product_name, price_digit_limit=None):
+    queue = multiprocessing.Queue()
 
     # Create processes
-    amazonScrapingProcess = multiprocessing.Process(target=scrape_amazon, args=(product_name, price_digit_limit, queue))
-    jumiaScrapingProcess = multiprocessing.Process(target=scrape_jumia, args=(product_name, price_digit_limit, queue))
+    p1 = multiprocessing.Process(target=scrape_amazon, args=(product_name, price_digit_limit, queue))
+    p2 = multiprocessing.Process(target=scrape_jumia, args=(product_name, price_digit_limit, queue))
 
-    # Start the processes
-    amazonScrapingProcess.start()
-    jumiaScrapingProcess.start()
+    # Start processes
+    p1.start()
+    p2.start()
 
-    # Wait for the processes to complete
-    # amazonScrapingProcess.join()
-    # jumiaScrapingProcess.join()
+    # Wait for processes to complete
+    p1.join()
+    p2.join()
 
-    # Retrieve results from the queue
-    results_amazon = queue.get()  # Get the results from Amazon
-    results_jumia = queue.get()  # Get the results from Jumia
+    # Debugging: Check the queue size after processes finish
+    print(f"Queue size after both processes finish: {queue.qsize()}")
 
-    # Combine the results from both sources
-    all_results = {}
+    # Retrieve results from queue
+    results_amazon = []
+    results_jumia = []
 
-    if results_amazon:  # If Amazon returned results
-        for result in results_amazon:
-            all_results[result[0]] = result[1]
-    if results_jumia:  # If Jumia returned results
-        for result in results_jumia:
-            all_results[result[0]] = result[1]
+    # Check if queue has results
+    while not queue.empty():
+        site, results = queue.get()
+        # print(f"Results from {site}: {results}")  # Debugging output
+        if site == 'amazon':
+            results_amazon = results
+        elif site == 'jumia':
+            results_jumia = results
 
-    # Print combined results
-    for key, value in all_results.items():
-        print(f"{key} --> {value}".format(key, value))
+
+    # Return results and total time
+    return results_amazon, results_jumia
