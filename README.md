@@ -21,65 +21,7 @@ market-price-estimation/
 ├── requirements.txt # Python dependencies
 └── README.md # Project documentation
 
-text
 
-## 📦 Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/your-username/market-price-estimation.git
-cd market-price-estimation
-Install dependencies:
-
-bash
-pip install -r requirements.txt
-🧪 Usage
-API Request Example
-Send a POST request to the API endpoint:
-
-http
-POST /market-prices-estimation/
-Content-Type: application/json
-
-{
-  "product_name": "wireless headphones",
-  "cost_price": 500,
-  "user_price": 700
-}
-Sample Response
-json
-{
-  "recommendation": {
-    "status": "Competitive",
-    "suggested_range": [680, 750],
-    "profit_margin_percent": 40,
-    "profit_margin_egp": 200
-  },
-  "market_stats": {
-    "min_price": 600,
-    "max_price": 800,
-    "average_price": 710
-  },
-  "products": [
-    { "name": "...", "price": "...", "link": "...", "source": "Amazon/Jumia" }
-  ]
-}
-📡 Live Demo
-Access the system on Hugging Face Spaces:
-🌍 https://huggingface.co/spaces/abdallah-03/MarketPriceEstimation
-
-🔧 Future Enhancements
-Integrate more marketplaces
-
-Track historical price trends
-
-Add ML-based price prediction
-
-Enhance product matching
-
-Introduce user accounts and dashboards
-
-🤝 Contributing
 Contributions are welcome! Feel free to open issues or submit pull requests.
 
 � License
