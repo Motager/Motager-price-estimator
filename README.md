@@ -11,20 +11,4 @@ The **Market Price Estimation System** is a smart pricing assistant for online s
 - 📈 **Profitability Metrics** based on your cost and suggested price
 - 🌐 **REST API** via FastAPI, deployable on Hugging Face Spaces
 
-## 🛠️ System Architecture
-market-price-estimation/
-├── Amazon_scraper.py # Scrapes product data from Amazon using BeautifulSoup
-├── Jumia_scraper.py # Scrapes product data from Jumia
-├── parallel_execution.py # Runs both scrapers in parallel using multiprocessing
-├── price_analysis.py # Analyzes prices, removes outliers, and gives suggestions
-├── API_main.py # Exposes the system as an API using FastAPI
-├── requirements.txt # Python dependencies
-└── README.md # Project documentation
-
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-
-� License
-This project is licensed under the MIT License.
-
 Built with ❤️ by Abdallah Mohamed
